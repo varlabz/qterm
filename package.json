@@ -1,0 +1,29 @@
+{
+  "name": "qterm",
+  "version": "1.0.0",
+  "description": "A terminal application using Langchain.js",
+  "main": "src/index.ts",
+  "scripts": {
+    "start": "ts-node src/index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "terminal",
+    "langchain",
+    "typescript"
+  ],
+  "author": "Roo",
+  "license": "MIT",
+  "dependencies": {
+    "@langchain/google-genai": "^0.2.0",
+    "@langchain/ollama": "^0.2.0",
+    "@langchain/openai": "^0.5.0",
+    "@types/node": "^20.0.0",
+    "commander": "^11.0.0",
+    "dotenv": "^16.0.0",
+    "langchain": "^0.1.0",
+    "readline": "^1.1.0",
+    "ts-node": "^10.0.0",
+    "typescript": "^5.0.0"
+  }
+}
