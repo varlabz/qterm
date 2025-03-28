@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  qterm:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: qterm
+    container_name: qterm
+    stdin_open: true # Equivalent to -i
+    tty: true # Equivalent to -t
+    volumes:
+      - ./.key:/app/.key:ro # Mount API keys file as read-only
+    environment:
+      - NODE_ENV=production
+    # Example command override (optional)
+    command: ["-p", "google", "-m", "gemini-2.0-flash", "-s", "You are a helpful assistant."]
