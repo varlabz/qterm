@@ -71,8 +71,7 @@ Utilize the following libraries effectively:
 ### Example of let
 ```typescript
 const data: Array<number> | null = await idsFromFile();
-
-const str = data?.let(it => 
+const str = use(data)?.let(it => 
     processToString(it);
 ) ?? "empty";
 ```
@@ -80,15 +79,13 @@ const str = data?.let(it =>
 ### Example of also
 ```typescript
 const list: Array<string> = model.getNames();
-
-const filtered = list.also(it => 
+const filtered = use(list)?.also(it => 
     it.slice(0, 4);
 ).also(it =>
     applyFilter(filter, it);
 ).also(console.log);
-
 // same as
-const filtered = list.also(it => {
+const filtered = use(list)?.also(it => {
     it.slice(0, 4);
     applyFilter(filter, it);
     console.log(it);
@@ -98,8 +95,7 @@ const filtered = list.also(it => {
 ### Example of run
 ```typescript
 const list: Array<object> | undefined = currentAcc?.getContacts();
-
-const lastsByName = list?.run(function() {
+const lastsByName = use(list)?.run(function() {
     this.filter();
     this.reverse();
     return this.slice(0, 3);
@@ -109,8 +105,7 @@ const lastsByName = list?.run(function() {
 ### Example of apply
 ```typescript
 const obj = { name: "Daniel", age: 30 };
-
-obj.apply(function() {
+use(obj)?.apply(function() {
     this.name = "Dan";
     this.age++;
     this["country"] = "Canada";
