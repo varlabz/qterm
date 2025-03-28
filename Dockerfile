@@ -3,6 +3,8 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 COPY . .
+# Install TypeScript globally in the container for build
+RUN npm install -g typescript
 RUN npm run build
 RUN touch .key
 ENV NODE_ENV=production
