@@ -1,7 +1,7 @@
 import * as readline from 'readline';
 import { ChatAgent, LLM, LLMConfig } from './chat';
 import { OptionValues } from 'commander';
-import { config, getSystemPrompt } from '.';
+import { llmConfig, getSystemPrompt } from '.';
 
 /**
  * Provides an interactive terminal interface for chatting with the LLM.
@@ -16,9 +16,9 @@ export async function terminal(options: OptionValues): Promise<void> {
     input: process.stdin,
     output: process.stdout,
   });
-  const llmConfig = await config(options);
-  const chat = new ChatAgent(llmConfig);
-  await chat.start(await getSystemPrompt(options));
+  const cfg = await llmConfig(options);
+  const chat = new ChatAgent(cfg);
+  await chat.start(await getSystemPrompt(options.systemPrompt));
   const startPrompt = async () => {
     while (true) {
       const input = await new Promise<string>((resolve) => {

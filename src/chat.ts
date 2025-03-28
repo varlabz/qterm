@@ -1,6 +1,3 @@
-import { ChatOpenAI, } from "@langchain/openai";
-import { ChatOllama, } from "@langchain/ollama";
-import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { BaseChatModel } from "@langchain/core/language_models/chat_models";
 import { ChatPromptTemplate, HumanMessagePromptTemplate, SystemMessagePromptTemplate } from "@langchain/core/prompts";
 import { AIMessage, BaseMessage } from "@langchain/core/messages";
@@ -23,6 +20,45 @@ export type LLMConfig = {
     model?: string;
     baseUrl?: string;
 }
+
+export class ChatAgent {
+  _llm: BaseChatModel;
+  _debug = false;
+  _chatHistory: BaseMessage[] = [];
+
+  constructor(config: LLMConfig, systemPrompt?: string) {
+    this._llm = llm(config);
+  }
+
+  async start(systemPrompt: string = "You are a helpful assistant.") {
+    this._chatHistory.push(
+      await SystemMessagePromptTemplate.fromTemplate(
+        systemPrompt,
+      ).format({}),
+    );
+  }
+
+  async call(input: string, ) {
+    this._chatHistory.push(
+      await HumanMessagePromptTemplate.fromTemplate("{input}").format({ input }),
+    );
+    const response = await this._llm.invoke(this._chatHistory,);
+    this._chatHistory.push(
+      new AIMessage({ content: response.content })
+    );
+    return response.content;
+  }
+
+  async stop() {
+    this._chatHistory = [];
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+import { ChatOpenAI, } from "@langchain/openai";
+import { ChatOllama, } from "@langchain/ollama";
+import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 
 function llm(provider: LLMConfig): BaseChatModel {
   switch (provider.provider) {
@@ -70,38 +106,5 @@ function llm(provider: LLMConfig): BaseChatModel {
 
   default:
     throw new Error(`Unknown provider: ${provider.provider}`);
-  }
-}
-
-export class ChatAgent {
-  _llm: BaseChatModel;
-  _debug = false;
-  _chatHistory: BaseMessage[] = [];
-
-  constructor(config: LLMConfig, systemPrompt?: string) {
-    this._llm = llm(config);
-  }
-
-  async start(systemPrompt: string = "You are a helpful assistant.") {
-    this._chatHistory.push(
-      await SystemMessagePromptTemplate.fromTemplate(
-        systemPrompt,
-      ).format({}),
-    );
-  }
-
-  async call(input: string, ) {
-    this._chatHistory.push(
-      await HumanMessagePromptTemplate.fromTemplate("{input}").format({ input }),
-    );
-    const response = await this._llm.invoke(this._chatHistory,);
-    this._chatHistory.push(
-      new AIMessage({ content: response.content })
-    );
-    return response.content;
-  }
-
-  async stop() {
-    this._chatHistory = [];
   }
 }

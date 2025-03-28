@@ -26,7 +26,7 @@ export async function key(provider:LLM): Promise<string | undefined> {
   }
 }
 
-export async function config(argv: OptionValues): Promise<LLMConfig> {
+export async function llmConfig(argv: OptionValues): Promise<LLMConfig> {
   const provider = argv.provider || LLM.GOOGLE;
   return {
     provider: provider,
@@ -35,15 +35,26 @@ export async function config(argv: OptionValues): Promise<LLMConfig> {
   };
 }
 
-export async function getSystemPrompt(argv: OptionValues): Promise<string> {
+export async function getSystemPrompt(str: string): Promise<string> {
   try {
-    return await fs.readFile(argv.systemPrompt, 'utf8');
+    return await fs.readFile(str, 'utf8');
   } catch (error) {
     // If reading the file fails, assume it's a string
     // This handles cases where the path doesn't exist or isn't accessible
     // console.log('System prompt is a string.');
   }
-  return argv.systemPrompt;
+  return str;
+}
+
+export async function getContext(str: string): Promise<string> {
+  try {
+    return await fs.readFile(str, 'utf8');
+  } catch (error) {
+    // If reading the file fails, assume it's a string
+    // This handles cases where the path doesn't exist or isn't accessible
+    // console.log('Context is a string.');
+  }
+  return str;
 }
 
 async function main() {
@@ -54,7 +65,7 @@ async function main() {
     .helpOption()
     .option('-p, --provider <value>', 'Provider (e.g., google, openai, openrouter)')
     .option('-m, --model <value>', 'Model to use')
-    .option('-i, --input <value>', 'Input text to process')
+    .option('-i, --input <value>', 'Input text to process (string or file path)')
     .option('-s, --system-prompt <value>', 'System prompt (string or file path)')
     .parse(process.argv, { from: 'user' });
   const options = program.opts();
