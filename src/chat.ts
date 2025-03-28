@@ -59,9 +59,17 @@ export class ChatAgent {
 import { ChatOpenAI, } from "@langchain/openai";
 import { ChatOllama, } from "@langchain/ollama";
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
+import { ChatAnthropic } from "@langchain/anthropic";
 
 function llm(provider: LLMConfig): BaseChatModel {
   switch (provider.provider) {
+  case LLM.ANTHROPIC:
+    return new ChatAnthropic({
+      model: provider.model || "claude-3-5-haiku-latest",
+      apiKey: provider.apiKey,
+      temperature: 0,
+    });  
+
   case LLM.OPENAI:
     return new ChatOpenAI({
       model: provider.model || "gpt-4o-mini",
@@ -69,12 +77,12 @@ function llm(provider: LLMConfig): BaseChatModel {
       temperature: 0,
     });
 
-   case LLM.GOOGLE:
-    return  new ChatGoogleGenerativeAI({
-      model: provider.model || "gemini-2.0-flash",
-      apiKey: provider.apiKey,
-      temperature: 0,
-    });
+  case LLM.GOOGLE:
+  return  new ChatGoogleGenerativeAI({
+    model: provider.model || "gemini-2.0-flash",
+    apiKey: provider.apiKey,
+    temperature: 0,
+  });
 
   case LLM.OPENROUTER:
     return new ChatOpenAI({

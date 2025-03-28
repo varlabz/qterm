@@ -8,6 +8,9 @@ import * as fs from 'fs/promises';
 export async function key(provider:LLM): Promise<string | undefined> {
   process.loadEnvFile('.key');
   switch (provider) {
+  case LLM.ANTHROPIC:
+    return process.env.ANTHROPIC_API_KEY;
+
   case LLM.OPENROUTER:
       return process.env.OPENROUTER_API_KEY;
   

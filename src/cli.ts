@@ -1,8 +1,7 @@
 import { OptionValues } from 'commander';
-import { ChatAgent, LLM, LLMConfig } from './chat';
+import { ChatAgent, } from './chat';
 import { llmConfig, getSystemPrompt, getContext } from '.';
-import use from './scope';
-
+import use from "@varlabz/scope-extensions-js";
 
 export async function cli(options: OptionValues) {
   const cfg = await llmConfig(options);
