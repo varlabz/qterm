@@ -78,7 +78,7 @@ function llm(provider: LLMConfig): BaseChatModel {
 
   case LLM.OPENROUTER:
     return new ChatOpenAI({
-      model: provider.model || "google/gemini-flash-1.5",
+      model: provider.model || "qwen/qwq-32b:free",
       apiKey: provider.apiKey,
       configuration: {
         baseURL: "https://openrouter.ai/api/v1",
