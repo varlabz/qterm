@@ -27,7 +27,7 @@
     "@varlabz/scope-extensions-js": "github:varlabz/scope-extensions-js",
     "commander": "^11.0.0",
     "dotenv": "^16.0.0",
-    "langchain": "^0.1.0",
+    "langchain": "^0.2.20",
     "readline": "^1.1.0",
     "ts-node": "^10.0.0",
     "typescript": "^5.0.0",
