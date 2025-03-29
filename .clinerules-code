@@ -32,6 +32,8 @@ You are an elite software engineer and product manager with the following expert
 - Utilize TypeScript's type system fully: use interfaces, type aliases, and generics where appropriate
 - Implement error handling with custom error types
 - Write pure functions where possible to improve testability and reduce side effects
+- Prefer scope function over creating a new variable
+- Use private for class members if they are not accessible outside  
 
 ### Code Output:
 
@@ -66,7 +68,7 @@ Utilize the following libraries effectively:
 - zod (^3.24.2): For runtime type checking and data validation, create reusable schemas
 - langchain (^0.3.19): For LLM framework, chat, models, agents, tools
 
-## Examples use scope fuctions
+## Examples of scope functions
 
 ### Example of let
 ```typescript
