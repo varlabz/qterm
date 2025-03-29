@@ -1,9 +1,8 @@
 import * as readline from 'readline';
 import { ChatAgent } from './chat';
 import { OptionValues } from 'commander';
-import { llmConfig, getSystemPrompt } from '.';
-import { initializeTools } from './mcp';
-import { youTubeTranscriptTool } from './tools';
+import { getSystemPrompt, llmConfig } from '.';
+import { timeTool, youTubeTranscriptTool } from './tools';
 
 /**
  * Provides an interactive terminal interface for chatting with the LLM.
@@ -12,7 +11,7 @@ import { youTubeTranscriptTool } from './tools';
  *
  * @param options - Command line options passed from index.ts
  */
-export async function terminal(options: OptionValues): Promise<void> {
+export const terminal = async (options: OptionValues): Promise<void> => {
   console.log('Type "/exit" or press Ctrl+C to quit.');
   const rl = readline.createInterface({
     input: process.stdin,
@@ -20,10 +19,10 @@ export async function terminal(options: OptionValues): Promise<void> {
   });
   const cfg = await llmConfig(options);
   // const tools = await initializeTools(options.mcpConfig);
-  const tools = [youTubeTranscriptTool];
+  const tools = [youTubeTranscriptTool, timeTool];
   const chat = new ChatAgent(cfg, tools);
   await chat.start(await getSystemPrompt(options.systemPrompt));
-  const startPrompt = async () => {
+  const startPrompt = async (): Promise<void> => {
     while (true) {
       const input = await new Promise<string>((resolve) => {
         rl.question('>> ', resolve);
@@ -49,4 +48,4 @@ export async function terminal(options: OptionValues): Promise<void> {
   };
   
   startPrompt();
-}
+};

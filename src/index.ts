@@ -5,62 +5,87 @@ import { terminal } from './terminal';
 import { LLM, LLMConfig } from './chat';
 import * as fs from 'fs/promises';
 
-export async function key(provider:LLM): Promise<string | undefined> {
+/**
+ * Gets the API key for the specified provider
+ * @param provider The LLM provider
+ * @returns The API key for the provider
+ */
+export const key = async (provider: LLM): Promise<string | undefined> => {
   process.loadEnvFile('.key');
   switch (provider) {
   case LLM.ANTHROPIC:
     return process.env.ANTHROPIC_API_KEY;
 
   case LLM.OPENROUTER:
-      return process.env.OPENROUTER_API_KEY;
-  
+    return process.env.OPENROUTER_API_KEY;
+    
   case LLM.OPENAI:
-      return process.env.OPENAI_API_KEY;
+    return process.env.OPENAI_API_KEY;
 
   case LLM.GOOGLE:
-      return process.env.GOOGLE_API_KEY;
+    return process.env.GOOGLE_API_KEY;
 
   case LLM.OLLAMA:
   case LLM.GPT4FREE:
-      return provider;
+    return provider;
 
   default:
-      throw new Error(`Unknown provider: ${provider}`);
+    throw new Error(`Unknown provider: ${provider}`);
   }
-}
+};
 
-export async function llmConfig(argv: OptionValues): Promise<LLMConfig> {
-  const provider = argv.provider || LLM.GOOGLE;
+/**
+ * Creates an LLM configuration from command line options
+ * @param argv Command line options
+ * @returns LLM configuration
+ */
+export const llmConfig = async (argv: OptionValues): Promise<LLMConfig> => {
+  const provider = argv.provider ?? LLM.GOOGLE;
   return {
     provider: provider,
     model: argv.model,
     apiKey: await key(provider),
   };
-}
+};
 
-export async function getSystemPrompt(str: string): Promise<string> {
+/**
+ * Attempts to read a file, falling back to using the input as a string
+ * @param str File path or string content
+ * @returns The file content or the original string
+ */
+export const readFileOrUseString = async (str: string): Promise<string> => {
   try {
     return await fs.readFile(str, 'utf8');
-  } catch (error) {
+  } catch {
     // If reading the file fails, assume it's a string
     // This handles cases where the path doesn't exist or isn't accessible
-    // console.log('System prompt is a string.');
   }
   return str;
-}
+};
 
-export async function getContext(str: string): Promise<string> {
-  try {
-    return await fs.readFile(str, 'utf8');
-  } catch (error) {
-    // If reading the file fails, assume it's a string
-    // This handles cases where the path doesn't exist or isn't accessible
-    // console.log('Context is a string.');
-  }
-  return str;
-}
+/**
+ * Gets the system prompt from a file or string
+ * @param str File path or string content
+ * @returns The system prompt
+ */
+export const getSystemPrompt = async (str: string): Promise<string> => {
+  return readFileOrUseString(str);
+};
 
-async function main() {
+/**
+ * Gets the context from a file or string
+ * @param str File path or string content
+ * @returns The context
+ */
+export const getContext = async (str: string): Promise<string> => {
+  return readFileOrUseString(str);
+};
+
+/**
+ * Main entry point for the CLI application
+ * @returns A promise that resolves when the application completes
+ */
+const main = async (): Promise<void> => {
   const program = new Command();
   program
     .version('1.0.0')
@@ -78,6 +103,6 @@ async function main() {
   } else {
     await terminal(options);
   }
-}
+};
 
 main();
