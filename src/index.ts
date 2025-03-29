@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { Command, OptionValues } from 'commander';
-import { cli,  } from './cli';
+import { cli } from './cli';
 import { terminal } from './terminal';
 import { LLM, LLMConfig } from './chat';
 import * as fs from 'fs/promises';
@@ -70,6 +70,7 @@ async function main() {
     .option('-m, --model <value>', 'Model to use')
     .option('-i, --input <value>', 'Input text to process (string or file path)')
     .option('-s, --system-prompt <value>', 'System prompt (string or file path)')
+    .option('-c, --mcp-config <value>', 'MCP config file path')
     .parse(process.argv, { from: 'user' });
   const options = program.opts();
   if (options.input) {

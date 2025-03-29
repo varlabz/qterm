@@ -1,7 +1,9 @@
 import * as readline from 'readline';
-import { ChatAgent, LLM, LLMConfig } from './chat';
+import { ChatAgent } from './chat';
 import { OptionValues } from 'commander';
 import { llmConfig, getSystemPrompt } from '.';
+import { initializeTools } from './mcp';
+import { youTubeTranscriptTool } from './tools';
 
 /**
  * Provides an interactive terminal interface for chatting with the LLM.
@@ -17,7 +19,9 @@ export async function terminal(options: OptionValues): Promise<void> {
     output: process.stdout,
   });
   const cfg = await llmConfig(options);
-  const chat = new ChatAgent(cfg);
+  // const tools = await initializeTools(options.mcpConfig);
+  const tools = [youTubeTranscriptTool];
+  const chat = new ChatAgent(cfg, tools);
   await chat.start(await getSystemPrompt(options.systemPrompt));
   const startPrompt = async () => {
     while (true) {
@@ -30,9 +34,13 @@ export async function terminal(options: OptionValues): Promise<void> {
         rl.close();
         break;
       }
-  
+      // if input is empty, skip
+      if (input.trim() === '') {
+        continue;
+      }
+
       try {
-        const response = await chat.call(input);
+        const response = await chat.call(input.trim());
         console.log(`\n${response}\n`);
       } catch (error: unknown) {
         console.error('Error:', error instanceof Error ? error.message : String(error));
