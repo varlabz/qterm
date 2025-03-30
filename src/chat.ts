@@ -1,6 +1,6 @@
 import { BaseChatModel } from '@langchain/core/language_models/chat_models';
 import { HumanMessagePromptTemplate, SystemMessagePromptTemplate } from '@langchain/core/prompts';
-import { BaseMessage } from '@langchain/core/messages';
+import { BaseMessage, SystemMessage } from '@langchain/core/messages';
 import { StructuredToolInterface } from '@langchain/core/tools';
 import use from '@varlabz/scope-extensions-js';
 
@@ -40,11 +40,13 @@ export class ChatAgent {
   }
 
   async start(systemPrompt: string = 'You are a helpful assistant.'): Promise<void> {
-    this._chatHistory.push(
-      await SystemMessagePromptTemplate.fromTemplate(
-        systemPrompt,
-      ).format({}),
-    );
+    this._chatHistory.push(new SystemMessage(systemPrompt,),);
+    // TODO: use template later
+    // this._chatHistory.push(
+    //   await SystemMessagePromptTemplate.fromTemplate(
+    //     systemPrompt,
+    //   ).format({}),
+    // );
   }
 
   async call(input: string): Promise<string | undefined> {

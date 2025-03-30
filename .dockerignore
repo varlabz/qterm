@@ -10,5 +10,6 @@ dist
 .vscode
 .idea
 *.md
+docs
 !README.md
 !CLAUDE.md

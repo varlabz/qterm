@@ -1,7 +1,7 @@
 import * as readline from 'readline';
 import { ChatAgent } from './chat';
 import { OptionValues } from 'commander';
-import { getSystemPrompt, llmConfig } from '.';
+import { fileOrString, llmConfig } from '.';
 import { timeTool, youTubeTranscriptTool } from './tools';
 
 /**
@@ -21,7 +21,7 @@ export const terminal = async (options: OptionValues): Promise<void> => {
   // const tools = await initializeTools(options.mcpConfig);
   const tools = [youTubeTranscriptTool, timeTool];
   const chat = new ChatAgent(cfg, tools);
-  await chat.start(await getSystemPrompt(options.systemPrompt));
+  await chat.start(await fileOrString(options.systemPrompt));
   const startPrompt = async (): Promise<void> => {
     while (true) {
       const input = await new Promise<string>((resolve) => {

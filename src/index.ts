@@ -4,6 +4,8 @@ import { cli } from './cli';
 import { terminal } from './terminal';
 import { LLM, LLMConfig } from './chat';
 import * as fs from 'fs/promises';
+import * as path from 'path';
+import * as glob from 'glob';
 
 /**
  * Gets the API key for the specified provider
@@ -53,7 +55,7 @@ export const llmConfig = async (argv: OptionValues): Promise<LLMConfig> => {
  * @param str File path or string content
  * @returns The file content or the original string
  */
-export const readFileOrUseString = async (str: string): Promise<string> => {
+export const fileOrString = async (str: string): Promise<string> => {
   try {
     return await fs.readFile(str, 'utf8');
   } catch {
@@ -63,22 +65,28 @@ export const readFileOrUseString = async (str: string): Promise<string> => {
   return str;
 };
 
+
 /**
- * Gets the system prompt from a file or string
- * @param str File path or string content
- * @returns The system prompt
+ * Lists all available prompts in the fabric and awesome directories
+ * @returns A promise that resolves with a list of prompt files
  */
-export const getSystemPrompt = async (str: string): Promise<string> => {
-  return readFileOrUseString(str);
+export const listPrompts = async (): Promise<string[]> => {
+  const fabricPrompts = await glob.glob('fabric/*.md');
+  const awesomePrompts = await glob.glob('awesome/*.txt');
+  return [...fabricPrompts, ...awesomePrompts].sort();
 };
 
 /**
- * Gets the context from a file or string
- * @param str File path or string content
- * @returns The context
+ * Shows the content of a specific prompt
+ * @param promptPath Path to the prompt file
+ * @returns A promise that resolves with the content of the prompt
  */
-export const getContext = async (str: string): Promise<string> => {
-  return readFileOrUseString(str);
+export const showPrompt = async (promptPath: string): Promise<string> => {
+  try {
+    return await fs.readFile(promptPath, 'utf8');
+  } catch (error) {
+    throw new Error(`Failed to read prompt: ${promptPath}`);
+  }
 };
 
 /**
@@ -96,8 +104,47 @@ const main = async (): Promise<void> => {
     .option('-i, --input <value>', 'Input text to process (string or file path)')
     .option('-s, --system-prompt <value>', 'System prompt (string or file path)')
     .option('-c, --mcp-config <value>', 'MCP config file path')
+    .option('-L, --list-prompts', 'List all available prompts')
+    .option('-P, --prompt <value>', 'Show a specific prompt by name')
     .parse(process.argv, { from: 'user' });
+  
   const options = program.opts();
+  
+  if (options.listPrompts) {
+    const prompts = await listPrompts();
+    console.log('Available prompts:');
+    prompts.forEach(prompt => console.log(prompt));
+    return;
+  }
+  
+  if (options.prompt) {
+    try {
+      // Check if the prompt exists directly or needs to be resolved
+      let promptPath = options.prompt;
+      if (!promptPath.includes('/')) {
+        // Try to find the prompt in the fabric or awesome directories
+        const prompts = await listPrompts();
+        const matchingPrompt = prompts.find(p =>
+          path.basename(p, path.extname(p)) === promptPath ||
+          p === promptPath
+        );
+        
+        if (matchingPrompt) {
+          promptPath = matchingPrompt;
+        } else {
+          throw new Error(`Prompt not found: ${promptPath}`);
+        }
+      }
+      
+      const content = await showPrompt(promptPath);
+      console.log(content);
+      return;
+    } catch (error) {
+      console.error(error instanceof Error ? error.message : String(error));
+      process.exit(1);
+    }
+  }
+  
   if (options.input) {
     await cli(options);
   } else {

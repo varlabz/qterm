@@ -66,27 +66,6 @@ docker run -it --rm -v $(pwd)/.key:/app/.key:ro qterm -i "Your query here"
 docker run -it --rm -v $(pwd)/.key:/app/.key:ro qterm -p google -m gemini-2.0-flash
 ```
 
-### Using Docker Compose
-
-1. Configure your API keys in a `.key` file:
-
-```
-OPENAI_API_KEY=your_openai_key
-ANTHROPIC_API_KEY=your_anthropic_key
-GOOGLE_API_KEY=your_google_key
-OPENROUTER_API_KEY=your_openrouter_key
-```
-
-2. Run the application:
-
-```bash
-# Start in interactive mode
-docker-compose up
-
-# Run with specific arguments
-docker-compose run --rm qterm -p google -m gemini-2.0-flash -i "Your query here"
-```
-
 ## License
 
 MIT
