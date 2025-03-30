@@ -45,7 +45,76 @@ npm start -- -p google -m gemini-2.0-flash
 - `-i, --input <value>`: Input text to process (string or file path)
 - `-s, --system-prompt <value>`: System prompt (string or file path)
 - `-L, --list-prompts`: List all available prompts from fabric and awesome directories
-- `-P, --prompt <value>`: Show a specific prompt by name 
+- `-P, --prompt <value>`: Show a specific prompt by name
+
+## Using Aliases
+
+You can create shell aliases to make qterm easier to use in your daily workflow. Aliases allow you to run qterm with your preferred settings using shorter commands.
+
+### Creating Aliases
+
+You can create aliases for both npm and Docker approaches.
+
+#### Using npm (Local Installation)
+
+Add these lines to your `~/.bashrc`, `~/.bash_profile` (Bash), or `~/.zshrc` (Zsh):
+
+```bash
+# Basic qterm alias
+alias qt='npm start --prefix /path/to/qterm'
+
+# qterm with specific provider and model
+alias qtg='npm start --prefix /path/to/qterm -- -p google -m gemini-2.0-flash'
+alias qto='npm start --prefix /path/to/qterm -- -p openai -m gpt-4o'
+```
+
+#### Using Docker
+
+Add these lines to your shell configuration file:
+
+```bash
+# Basic qterm alias with Docker
+alias qtd='docker run -it --rm -v $(pwd)/.key:/app/.key:ro varlabz/qterm'
+
+# qterm with specific provider and model
+alias qtdg='docker run -it --rm -v $(pwd)/.key:/app/.key:ro varlabz/qterm -p google -m gemini-2.0-flash'
+alias qtdo='docker run -it --rm -v $(pwd)/.key:/app/.key:ro varlabz/qterm -p openai -m gpt-4o'
+
+```
+
+After adding the aliases, reload your shell configuration:
+
+```bash
+# For Bash
+source ~/.bashrc  # or source ~/.bash_profile
+
+# For Zsh
+source ~/.zshrc
+```
+
+### Using the Aliases
+
+Once set up, you can use qterm with simple commands:
+
+```bash
+# Start interactive mode (npm version)
+qt
+
+# Start interactive mode (Docker version)
+qtd
+
+# Use with input (npm version)
+qt -i "Your query here"
+
+# Use with input (Docker version)
+qtd -i "Your query here"
+
+# Use Google's Gemini model (Docker version)
+qtdg -i "Tell me about quantum computing"
+
+# Use with access to local files (Docker version)
+qtdl -i "Analyze the file in /workspace/myfile.txt"
+```
 
 ## Using Docker
 
