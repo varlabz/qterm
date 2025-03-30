@@ -42,7 +42,7 @@ export const key = async (provider: LLM): Promise<string | undefined> => {
  * @returns LLM configuration
  */
 export const llmConfig = async (argv: OptionValues): Promise<LLMConfig> => {
-  const provider = argv.provider ?? LLM.GOOGLE;
+  const provider = argv.provider ?? LLM.ANTHROPIC;
   return {
     provider: provider,
     model: argv.model,
