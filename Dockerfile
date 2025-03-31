@@ -24,7 +24,7 @@ ENV AWESOME=/app/awesome
 RUN git clone --depth 1 https://github.com/f/awesome-chatgpt-prompts.git /tmp/awesome && \
     rm -rf $AWESOME && \
     mkdir -p $AWESOME
-RUN npm run build && node dist/awesome-to-files.js /tmp/awesome/prompts.csv $AWESOME && \
+RUN npm run build && node dist/tools/awesome-to-files.js /tmp/awesome/prompts.csv $AWESOME && \
     rm -rf /tmp/awesome
 
 # Production stage

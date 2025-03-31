@@ -73,7 +73,8 @@ export const fileOrString = async (str: string): Promise<string> => {
 export const listPrompts = async (): Promise<string[]> => {
   const fabricPrompts = await glob.glob('fabric/*.md');
   const awesomePrompts = await glob.glob('awesome/*.txt');
-  return [...fabricPrompts, ...awesomePrompts].sort();
+  const userPrompts = await glob.glob('user/*.md');
+  return [...fabricPrompts, ...awesomePrompts, ...userPrompts].sort();
 };
 
 /**
