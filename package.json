@@ -31,6 +31,7 @@
     "dotenv": "^16.0.0",
     "glob": "^11.0.1",
     "langchain": "^0.2.20",
+    "playwright": "^1.51.1",
     "readline": "^1.1.0",
     "ts-node": "^10.0.0",
     "typescript": "^5.0.0",

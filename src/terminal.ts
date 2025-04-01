@@ -2,7 +2,7 @@ import * as readline from 'readline';
 import { ChatAgent } from './chat';
 import { OptionValues } from 'commander';
 import { fileOrString, llmConfig } from '.';
-import { timeTool, youTubeTranscriptTool } from './tools';
+import { timeTool, youTubeTranscriptTool, playwrightTool } from './tools';
 
 /**
  * Provides an interactive terminal interface for chatting with the LLM.
@@ -19,7 +19,7 @@ export const terminal = async (options: OptionValues): Promise<void> => {
   });
   const cfg = await llmConfig(options);
   // const tools = await initializeTools(options.mcpConfig);
-  const tools = [youTubeTranscriptTool, timeTool];
+  const tools = [youTubeTranscriptTool, timeTool, playwrightTool];
   const chat = new ChatAgent(cfg, tools);
   await chat.start(await fileOrString(options.systemPrompt));
   const startPrompt = async (): Promise<void> => {
