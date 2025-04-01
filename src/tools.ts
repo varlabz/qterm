@@ -41,15 +41,12 @@ export const timeTool = tool(
 
 
 export const playwrightTool = tool(
-  async ({ url, command , connect = true }): Promise<string> => {
-    console.log('connect:', connect, 'command:', command);
+  async ({ url, command }): Promise<string> => {
+    console.log('command:', command);
     const { chromium } = await import('playwright');
     let browser: Browser | undefined;
     try {
-      browser ??= connect
-        ? await chromium.connectOverCDP('http://localhost:9222')
-        : await chromium.launch();
-      
+      browser = await chromium.connectOverCDP('http://localhost:9222');
       if (command === 'fetch') {
         for (const context of await browser.contexts()) {
           for (const page of await context.pages()) {
@@ -88,7 +85,6 @@ export const playwrightTool = tool(
     description: 'Use Playwright to interact with web pages and retrieve their HTML content.',
     schema: z.object({
       url: z.string().describe('The URL of the web page to fetch.'),
-      connect: z.boolean().describe('Whether to connect to an open browser using CDP. Defaults to true.'),
       command: z.enum(['fetch', 'list']).describe('The command to execute: list (list of open tabs), or fetch (get web page content as html page).'),
     }),
   },

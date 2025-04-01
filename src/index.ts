@@ -51,11 +51,33 @@ export const llmConfig = async (argv: OptionValues): Promise<LLMConfig> => {
 };
 
 /**
+ * Reads all content from stdin
+ * @returns A promise that resolves with the content from stdin
+ */
+export const readFromStdin = async (): Promise<string> => {
+  const chunks: Buffer[] = [];
+  return new Promise<string>((resolve) => {
+    process.stdin.on('data', (chunk: Buffer) => {
+      chunks.push(chunk);
+    });
+    process.stdin.on('end', () => {
+      resolve(Buffer.concat(chunks).toString('utf8'));
+    });
+  });
+};
+
+/**
  * Attempts to read a file, falling back to using the input as a string
- * @param str File path or string content
+ * If the input is "-", reads from stdin
+ * @param str File path, "-" for stdin, or string content
  * @returns The file content or the original string
  */
 export const fileOrString = async (str: string): Promise<string> => {
+  // Special case: read from stdin if input is "-"
+  if (str === '-') {
+    return await readFromStdin();
+  }
+  
   try {
     return await fs.readFile(str, 'utf8');
   } catch {
@@ -102,7 +124,7 @@ const main = async (): Promise<void> => {
     .helpOption()
     .option('-p, --provider <value>', 'Provider (e.g., google, openai, openrouter)')
     .option('-m, --model <value>', 'Model to use')
-    .option('-i, --input <value>', 'Input text to process (string or file path)')
+    .option('-i, --input <value>', 'Input text to process (string, file path, or "-" to read from stdin)')
     .option('-s, --system-prompt <value>', 'System prompt (string or file path)')
     .option('-c, --mcp-config <value>', 'MCP config file path')
     .option('-L, --list-prompts', 'List all available prompts')

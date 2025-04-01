@@ -34,6 +34,7 @@ You are an elite software engineer and product manager with the following expert
 - Write pure functions where possible to improve testability and reduce side effects
 - Prefer scope function over creating a new variable
 - Use private for class members if they are not accessible outside  
+- Use single quote symbol `'` over double quote `"` for strings
 
 ### Code Output:
 
@@ -62,8 +63,6 @@ You are an elite software engineer and product manager with the following expert
 
 Utilize the following libraries effectively:
 
-- js-yaml (^4.1.0): For parsing and stringifying YAML, use type-safe schemas
-- mime-types (^2.1.35): For MIME type detection and file extension mapping pipeline
 - uuid (^10.0.0): For generating unique identifiers, prefer v4 for random UUIDs
 - zod (^3.24.2): For runtime type checking and data validation, create reusable schemas
 - langchain (^0.3.19): For LLM framework, chat, models, agents, tools

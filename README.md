@@ -34,6 +34,9 @@ npm start
 # Use CLI mode with input
 npm start -- -i "Your query here"
 
+# Read input from stdin
+echo "Your query here" | npm start -- -i -
+
 # Select a specific provider and model
 npm start -- -p google -m gemini-2.0-flash
 ```
@@ -42,7 +45,7 @@ npm start -- -p google -m gemini-2.0-flash
 
 - `-p, --provider <value>`: Provider (e.g., google, openai, openrouter)
 - `-m, --model <value>`: Model to use
-- `-i, --input <value>`: Input text to process (string or file path)
+- `-i, --input <value>`: Input text to process (string, file path, or "-" to read from stdin)
 - `-s, --system-prompt <value>`: System prompt (string or file path)
 - `-L, --list-prompts`: List all available prompts from fabric and awesome directories
 - `-P, --prompt <value>`: Show a specific prompt by name
@@ -74,11 +77,11 @@ Add these lines to your shell configuration file:
 
 ```bash
 # Basic qterm alias with Docker
-alias qtd='docker run -it --rm -v $(pwd)/.key:/app/.key:ro varlabz/qterm'
+alias qtd='docker run -i --rm -v $(pwd)/.key:/app/.key:ro varlabz/qterm'
 
 # qterm with specific provider and model
-alias qtdg='docker run -it --rm -v $(pwd)/.key:/app/.key:ro varlabz/qterm -p google -m gemini-2.0-flash'
-alias qtdo='docker run -it --rm -v $(pwd)/.key:/app/.key:ro varlabz/qterm -p openai -m gpt-4o'
+alias qtdg='docker run -i --rm -v $(pwd)/.key:/app/.key:ro varlabz/qterm -p google -m gemini-2.0-flash'
+alias qtdo='docker run -i --rm -v $(pwd)/.key:/app/.key:ro varlabz/qterm -p openai -m gpt-4o'
 
 ```
 
@@ -106,8 +109,14 @@ qtd
 # Use with input (npm version)
 qt -i "Your query here"
 
+# Read input from stdin (npm version)
+echo "Your query here" | qt -i -
+
 # Use with input (Docker version)
 qtd -i "Your query here"
+
+# Read input from stdin (Docker version)
+echo "Your query here" | qtd -i -
 
 # Use Google's Gemini model (Docker version)
 qtdg -i "Tell me about quantum computing"
@@ -128,13 +137,16 @@ docker pull varlabz/qterm
 
 ```bash
 # Interactive mode
-docker run -it --rm -v $(pwd)/.key:/app/.key:ro varlabz/qterm
+docker run -i --rm -v $(pwd)/.key:/app/.key:ro varlabz/qterm
 
 # CLI mode with input
-docker run -it --rm -v $(pwd)/.key:/app/.key:ro varlabz/qterm -i "Your query here"
+docker run -i --rm -v $(pwd)/.key:/app/.key:ro varlabz/qterm -i "Your query here"
+
+# Read input from stdin
+echo "Your query here" | docker run -i --rm -v $(pwd)/.key:/app/.key:ro varlabz/qterm -i -
 
 # With specific provider and model
-docker run -it --rm -v $(pwd)/.key:/app/.key:ro varlabz/qterm -p google -m gemini-2.0-flash
+docker run -i --rm -v $(pwd)/.key:/app/.key:ro varlabz/qterm -p google -m gemini-2.0-flash
 ```
 
 ### Building the Docker image locally (optional)
