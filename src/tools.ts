@@ -5,10 +5,21 @@ import { Browser } from 'playwright-core';
 export const youTubeTranscriptTool = tool(
   async (url: string): Promise<string> => {
     const { YoutubeLoader } = await import('@langchain/community/document_loaders/web/youtube');
-    return (await YoutubeLoader.createFromUrl(url, {
-      language: 'en',
-      addVideoInfo: false,
-    }).load())[0].pageContent;
+    const originalConsoleLog = console.log;
+    const originalConsoleWarn = console.warn;
+    const originalConsoleError = console.error;
+    // Temporarily silence console output
+    console.log = console.warn = console.error = () => {};
+    try {
+      return (await YoutubeLoader.createFromUrl(url, {
+        language: 'en',
+        addVideoInfo: false,
+      }).load())[0].pageContent;
+    } finally {
+      console.log = originalConsoleLog;
+      console.warn = originalConsoleWarn;
+      console.error = originalConsoleError;
+    }
   },
   {
     name: 'youtube_transcript_tool',

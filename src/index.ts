@@ -23,7 +23,7 @@ export const key = async (provider: LLM): Promise<string | undefined> => {
     
   case LLM.OPENAI:
     return process.env.OPENAI_API_KEY;
-
+ 
   case LLM.GOOGLE:
     return process.env.GOOGLE_API_KEY;
 
@@ -47,6 +47,7 @@ export const llmConfig = async (argv: OptionValues): Promise<LLMConfig> => {
     provider: provider,
     model: argv.model,
     apiKey: await key(provider),
+    baseUrl: argv.baseUrl,
   };
 };
 
@@ -124,6 +125,7 @@ const main = async (): Promise<void> => {
     .helpOption()
     .option('-p, --provider <value>', 'Provider (e.g., google, openai, openrouter)')
     .option('-m, --model <value>', 'Model to use')
+    .option('-b, --base-url <value>', 'Base URL for the LLM provider')
     .option('-i, --input <value>', 'Input text to process (string, file path, or "-" to read from stdin)')
     .option('-s, --system-prompt <value>', 'System prompt (string or file path)')
     .option('-c, --mcp-config <value>', 'MCP config file path')
