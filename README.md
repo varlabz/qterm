@@ -50,6 +50,47 @@ npm start -- -p google -m gemini-2.0-flash
 - `-L, --list-prompts`: List all available prompts from fabric and awesome directories
 - `-P, --prompt <value>`: Show a specific prompt by name
 
+## Tools
+
+qterm includes several built-in tools that extend the capabilities of language models:
+
+### YouTube Transcript Tool
+
+Extracts transcripts from YouTube videos, allowing the language model to analyze or summarize video content.
+
+```bash
+# Example usage in a prompt
+"Please summarize this YouTube video: https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+```
+
+### Time Tool
+
+Gets the current time with optional timezone and formatting options.
+
+```bash
+# Example usage in a prompt
+"What time is it now? And what time is it in Tokyo?"
+```
+
+Parameters:
+- `format`: Locale format (e.g., 'en-US', 'ja-JP')
+- `timezone`: Timezone (e.g., 'America/New_York', 'Asia/Tokyo')
+
+### Playwright Tool
+
+Uses Playwright to interact with web pages and retrieve their HTML content, enabling the language model to analyze web content.
+
+```bash
+# Example usage in a prompt
+"What is the current headline on example.com?"
+```
+
+Commands:
+- `fetch`: Get web page content as HTML
+- `list`: List open browser tabs
+
+Note: The Playwright tool requires a Chrome instance running with remote debugging enabled on port 9222.
+
 ## Using Aliases
 
 You can create shell aliases to make qterm easier to use in your daily workflow. Aliases allow you to run qterm with your preferred settings using shorter commands.
