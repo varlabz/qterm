@@ -100,3 +100,8 @@ export const playwrightTool = tool(
     }),
   },
 );
+
+export const duckDuckGoSearchTool = async () => {
+  const { DuckDuckGoSearch } = await import('@langchain/community/tools/duckduckgo_search');
+  return new DuckDuckGoSearch({ maxResults: 5 });
+};
