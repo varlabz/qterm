@@ -1,6 +1,6 @@
 {
   "name": "qterm",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "A terminal application using Langchain.js",
   "main": "src/index.ts",
   "scripts": {
