@@ -39,14 +39,28 @@ echo "Your query here" | npm start -- -i -
 
 # Select a specific provider and model
 npm start -- -p google -m gemini-2.0-flash
+
+# Use a custom base URL for the provider
+npm start -- -p openai -b https://your-custom-endpoint.com/v1
+
+# Use an MCP configuration file
+npm start -- -c ./mcp-config.json
+
+# List available prompts
+npm start -- -L
+
+# Show a specific prompt
+npm start -- -P "prompt-name"
 ```
 
 ### Options
 
 - `-p, --provider <value>`: Provider (e.g., google, openai, openrouter)
 - `-m, --model <value>`: Model to use
+- `-b, --base-url <value>`: Base URL for the LLM provider
 - `-i, --input <value>`: Input text to process (string, file path, or "-" to read from stdin)
 - `-s, --system-prompt <value>`: System prompt (string or file path)
+- `-c, --mcp-config <value>`: MCP config file path
 - `-L, --list-prompts`: List all available prompts from fabric and awesome directories
 - `-P, --prompt <value>`: Show a specific prompt by name
 
@@ -110,6 +124,12 @@ alias qt='npm start --prefix /path/to/qterm'
 # qterm with specific provider and model
 alias qtg='npm start --prefix /path/to/qterm -- -p google -m gemini-2.0-flash'
 alias qto='npm start --prefix /path/to/qterm -- -p openai -m gpt-4o'
+
+# qterm with custom base URL
+alias qtc='npm start --prefix /path/to/qterm -- -p openai -b https://your-custom-endpoint.com/v1'
+
+# qterm with MCP configuration
+alias qtm='npm start --prefix /path/to/qterm -- -c /path/to/mcp-config.json'
 ```
 
 #### Using Docker
@@ -124,6 +144,11 @@ alias qtd='docker run -i --rm -v $(pwd)/.key:/app/.key:ro varlabz/qterm'
 alias qtdg='docker run -i --rm -v $(pwd)/.key:/app/.key:ro varlabz/qterm -p google -m gemini-2.0-flash'
 alias qtdo='docker run -i --rm -v $(pwd)/.key:/app/.key:ro varlabz/qterm -p openai -m gpt-4o'
 
+# qterm with custom base URL
+alias qtdc='docker run -i --rm -v $(pwd)/.key:/app/.key:ro varlabz/qterm -p openai -b https://your-custom-endpoint.com/v1'
+
+# qterm with MCP configuration
+alias qtdm='docker run -i --rm -v $(pwd)/.key:/app/.key:ro -v $(pwd)/mcp-config.json:/app/mcp-config.json:ro varlabz/qterm -c /app/mcp-config.json'
 ```
 
 After adding the aliases, reload your shell configuration:
@@ -162,6 +187,18 @@ echo "Your query here" | qtd -i -
 # Use Google's Gemini model (Docker version)
 qtdg -i "Tell me about quantum computing"
 
+# Use OpenAI with custom base URL (npm version)
+qtc -i "What's the weather like today?"
+
+# Use with MCP configuration (npm version)
+qtm -i "Use the MCP tools to analyze this data"
+
+# Use OpenAI with custom base URL (Docker version)
+qtdc -i "What's the weather like today?"
+
+# Use with MCP configuration (Docker version)
+qtdm -i "Use the MCP tools to analyze this data"
+
 # Use with access to local files (Docker version)
 qtdl -i "Analyze the file in /workspace/myfile.txt"
 ```
@@ -188,6 +225,18 @@ echo "Your query here" | docker run -i --rm -v $(pwd)/.key:/app/.key:ro varlabz/
 
 # With specific provider and model
 docker run -i --rm -v $(pwd)/.key:/app/.key:ro varlabz/qterm -p google -m gemini-2.0-flash
+
+# Use a custom base URL for the provider
+docker run -i --rm -v $(pwd)/.key:/app/.key:ro varlabz/qterm -p openai -b https://your-custom-endpoint.com/v1
+
+# Use an MCP configuration file (mounted from host)
+docker run -i --rm -v $(pwd)/.key:/app/.key:ro -v $(pwd)/mcp-config.json:/app/mcp-config.json:ro varlabz/qterm -c /app/mcp-config.json
+
+# List available prompts
+docker run -i --rm -v $(pwd)/.key:/app/.key:ro varlabz/qterm -L
+
+# Show a specific prompt
+docker run -i --rm -v $(pwd)/.key:/app/.key:ro varlabz/qterm -P "prompt-name"
 ```
 
 ### Building the Docker image locally (optional)
