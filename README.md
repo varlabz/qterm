@@ -11,6 +11,8 @@ A terminal application for interacting with various language models using Langch
 
 ## Installation
 
+### Using npm
+
 ```bash
 # Clone the repository
 git clone https://github.com/varlabz/qterm.git
@@ -21,6 +23,20 @@ npm install
 
 # Build the application
 npm run build
+```
+
+### Using Docker
+
+#### Pulling the Docker image
+
+```bash
+docker pull varlabz/qterm
+```
+
+#### Building the Docker image locally (optional)
+
+```bash
+docker build -t qterm .
 ```
 
 ## Usage
@@ -53,7 +69,7 @@ npm start -- -L
 npm start -- -P "prompt-name"
 ```
 
-### Options
+### Command-line Options
 
 - `-p, --provider <value>`: Provider (e.g., google, openai, openrouter)
 - `-m, --model <value>`: Model to use
@@ -64,11 +80,11 @@ npm start -- -P "prompt-name"
 - `-L, --list-prompts`: List all available prompts from fabric and awesome directories
 - `-P, --prompt <value>`: Show a specific prompt by name
 
-## Tools
+### Built-in Tools
 
 qterm includes several built-in tools that extend the capabilities of language models:
 
-### YouTube Transcript Tool
+#### YouTube Transcript Tool
 
 Extracts transcripts from YouTube videos, allowing the language model to analyze or summarize video content.
 
@@ -77,7 +93,7 @@ Extracts transcripts from YouTube videos, allowing the language model to analyze
 "Please summarize this YouTube video: https://www.youtube.com/watch?v=dQw4w9WgXcQ"
 ```
 
-### Time Tool
+#### Time Tool
 
 Gets the current time with optional timezone and formatting options.
 
@@ -90,7 +106,7 @@ Parameters:
 - `format`: Locale format (e.g., 'en-US', 'ja-JP')
 - `timezone`: Timezone (e.g., 'America/New_York', 'Asia/Tokyo')
 
-### Playwright Tool
+#### Playwright Tool
 
 Uses Playwright to interact with web pages and retrieve their HTML content, enabling the language model to analyze web content.
 
@@ -105,15 +121,45 @@ Commands:
 
 Note: The Playwright tool requires a Chrome instance running with remote debugging enabled on port 9222.
 
-## Using Aliases
+## Advanced Usage
+
+### Running with Docker
+
+```bash
+# Interactive mode
+docker run -i --rm -v $(pwd)/.key:/app/.key:ro varlabz/qterm
+
+# CLI mode with input
+docker run -i --rm -v $(pwd)/.key:/app/.key:ro varlabz/qterm -i "Your query here"
+
+# Read input from stdin
+echo "Your query here" | docker run -i --rm -v $(pwd)/.key:/app/.key:ro varlabz/qterm -i -
+
+# With specific provider and model
+docker run -i --rm -v $(pwd)/.key:/app/.key:ro varlabz/qterm -p google -m gemini-2.0-flash
+
+# Use a custom base URL for the provider
+docker run -i --rm -v $(pwd)/.key:/app/.key:ro varlabz/qterm -p openai -b https://your-custom-endpoint.com/v1
+
+# Use an MCP configuration file (mounted from host)
+docker run -i --rm -v $(pwd)/.key:/app/.key:ro -v $(pwd)/mcp-config.json:/app/mcp-config.json:ro varlabz/qterm -c /app/mcp-config.json
+
+# List available prompts
+docker run -i --rm -v $(pwd)/.key:/app/.key:ro varlabz/qterm -L
+
+# Show a specific prompt
+docker run -i --rm -v $(pwd)/.key:/app/.key:ro varlabz/qterm -P "prompt-name"
+```
+
+### Using Aliases
 
 You can create shell aliases to make qterm easier to use in your daily workflow. Aliases allow you to run qterm with your preferred settings using shorter commands.
 
-### Creating Aliases
+#### Creating Aliases
 
 You can create aliases for both npm and Docker approaches.
 
-#### Using npm (Local Installation)
+##### Using npm (Local Installation)
 
 Add these lines to your `~/.bashrc`, `~/.bash_profile` (Bash), or `~/.zshrc` (Zsh):
 
@@ -132,7 +178,7 @@ alias qtc='npm start --prefix /path/to/qterm -- -p openai -b https://your-custom
 alias qtm='npm start --prefix /path/to/qterm -- -c /path/to/mcp-config.json'
 ```
 
-#### Using Docker
+##### Using Docker
 
 Add these lines to your shell configuration file:
 
@@ -161,7 +207,7 @@ source ~/.bashrc  # or source ~/.bash_profile
 source ~/.zshrc
 ```
 
-### Using the Aliases
+#### Using the Aliases
 
 Once set up, you can use qterm with simple commands:
 
@@ -201,48 +247,6 @@ qtdm -i "Use the MCP tools to analyze this data"
 
 # Use with access to local files (Docker version)
 qtdl -i "Analyze the file in /workspace/myfile.txt"
-```
-
-## Using Docker
-
-### Pulling the Docker image
-
-```bash
-docker pull varlabz/qterm
-```
-
-### Running with Docker
-
-```bash
-# Interactive mode
-docker run -i --rm -v $(pwd)/.key:/app/.key:ro varlabz/qterm
-
-# CLI mode with input
-docker run -i --rm -v $(pwd)/.key:/app/.key:ro varlabz/qterm -i "Your query here"
-
-# Read input from stdin
-echo "Your query here" | docker run -i --rm -v $(pwd)/.key:/app/.key:ro varlabz/qterm -i -
-
-# With specific provider and model
-docker run -i --rm -v $(pwd)/.key:/app/.key:ro varlabz/qterm -p google -m gemini-2.0-flash
-
-# Use a custom base URL for the provider
-docker run -i --rm -v $(pwd)/.key:/app/.key:ro varlabz/qterm -p openai -b https://your-custom-endpoint.com/v1
-
-# Use an MCP configuration file (mounted from host)
-docker run -i --rm -v $(pwd)/.key:/app/.key:ro -v $(pwd)/mcp-config.json:/app/mcp-config.json:ro varlabz/qterm -c /app/mcp-config.json
-
-# List available prompts
-docker run -i --rm -v $(pwd)/.key:/app/.key:ro varlabz/qterm -L
-
-# Show a specific prompt
-docker run -i --rm -v $(pwd)/.key:/app/.key:ro varlabz/qterm -P "prompt-name"
-```
-
-### Building the Docker image locally (optional)
-
-```bash
-docker build -t qterm .
 ```
 
 ## License
