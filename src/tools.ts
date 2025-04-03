@@ -101,7 +101,13 @@ export const playwrightTool = tool(
   },
 );
 
-export const duckDuckGoSearchTool = async () => {
-  const { DuckDuckGoSearch } = await import('@langchain/community/tools/duckduckgo_search');
-  return new DuckDuckGoSearch({ maxResults: 5 });
-};
+import { DuckDuckGoSearch } from '@langchain/community/tools/duckduckgo_search';
+
+export const duckDuckGoSearchTool = new DuckDuckGoSearch({ maxResults: 5 });
+
+import { WikipediaQueryRun } from '@langchain/community/tools/wikipedia_query_run';
+
+export const wikipediaTool = new WikipediaQueryRun({
+  topKResults: 3,
+  maxDocContentLength: 4000,
+});
