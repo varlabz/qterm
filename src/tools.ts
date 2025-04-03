@@ -102,11 +102,9 @@ export const playwrightTool = tool(
 );
 
 import { DuckDuckGoSearch } from '@langchain/community/tools/duckduckgo_search';
-
 export const duckDuckGoSearchTool = new DuckDuckGoSearch({ maxResults: 5 });
 
 import { WikipediaQueryRun } from '@langchain/community/tools/wikipedia_query_run';
-
 export const wikipediaTool = new WikipediaQueryRun({
   topKResults: 3,
   maxDocContentLength: 4000,
