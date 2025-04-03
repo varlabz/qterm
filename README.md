@@ -127,7 +127,7 @@ Note: The Playwright tool requires a Chrome instance running with remote debuggi
 
 ```bash
 # Interactive mode
-docker run -i --rm -v $(pwd)/.key:/app/.key:ro varlabz/qterm
+docker run -it --rm -v $(pwd)/.key:/app/.key:ro varlabz/qterm
 
 # CLI mode with input
 docker run -i --rm -v $(pwd)/.key:/app/.key:ro varlabz/qterm -i "Your query here"
@@ -136,13 +136,13 @@ docker run -i --rm -v $(pwd)/.key:/app/.key:ro varlabz/qterm -i "Your query here
 echo "Your query here" | docker run -i --rm -v $(pwd)/.key:/app/.key:ro varlabz/qterm -i -
 
 # With specific provider and model
-docker run -i --rm -v $(pwd)/.key:/app/.key:ro varlabz/qterm -p google -m gemini-2.0-flash
+docker run -it --rm -v $(pwd)/.key:/app/.key:ro varlabz/qterm -p google -m gemini-2.0-flash
 
 # Use a custom base URL for the provider
-docker run -i --rm -v $(pwd)/.key:/app/.key:ro varlabz/qterm -p openai -b https://your-custom-endpoint.com/v1
+docker run -it --rm -v $(pwd)/.key:/app/.key:ro varlabz/qterm -p openai -b https://your-custom-endpoint.com/v1
 
 # Use an MCP configuration file (mounted from host)
-docker run -i --rm -v $(pwd)/.key:/app/.key:ro -v $(pwd)/mcp-config.json:/app/mcp-config.json:ro varlabz/qterm -c /app/mcp-config.json
+docker run -it --rm -v $(pwd)/.key:/app/.key:ro -v $(pwd)/mcp-config.json:/app/mcp-config.json:ro varlabz/qterm -c /app/mcp-config.json
 
 # List available prompts
 docker run -i --rm -v $(pwd)/.key:/app/.key:ro varlabz/qterm -L
