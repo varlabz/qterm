@@ -1,4 +1,6 @@
 import * as readline from 'readline';
+import * as fs from 'fs/promises';
+import * as path from 'path';
 import { ChatAgent } from './chat';
 import { OptionValues } from 'commander';
 import { fileOrString, llmConfig } from '.';
@@ -22,22 +24,71 @@ export const terminal = async (options: OptionValues): Promise<void> => {
   const tools = [youTubeTranscriptTool, timeTool, playwrightTool, duckDuckGoSearchTool, wikipediaTool];
   const chat = new ChatAgent(cfg, tools);
   await chat.start(await fileOrString(options.systemPrompt));
+
+  /**
+   * Handles terminal commands that start with "/"
+   *
+   * @param input - The user input
+   * @param rl - The readline interface
+   * @param chat - The ChatAgent instance
+   * @returns true if the input was handled as a command, false otherwise
+   */
+  const handleCommand = async (
+    input: string,
+    rl: readline.Interface,
+    chat: ChatAgent
+  ): Promise<boolean> => {
+    // Convert to lowercase for case-insensitive command matching
+    const lowerInput = input.toLowerCase();
+
+    // Handle /exit command
+    if (lowerInput === '/exit') {
+      console.log('Exiting chat...');
+      rl.close();
+      return true;
+    }
+
+    // Handle /read command
+    if (lowerInput.startsWith('/read ')) {
+      // Extract the file path from the input
+      const filePath = input.slice('/read '.length).trim();
+      if (!filePath) {
+        console.log('Error: No file path provided. Usage: /read <file_path>');
+        return true;
+      }
+
+      try {
+        const fileContent = await fs.readFile(filePath, 'utf8');
+        const response = await chat.call(fileContent.trim());
+        console.log(`\n${response}\n`);
+      } catch (error) {
+        console.error('Error reading file:', error instanceof Error ? error.message : String(error));
+      }
+
+      return true;
+    }
+
+    // If we reach here, the input wasn't a recognized command
+    return false;
+  };
+
   const startPrompt = async (): Promise<void> => {
     while (true) {
       const input = await new Promise<string>((resolve) => {
         rl.question('>> ', resolve);
       });
-  
-      if (input.toLowerCase() === '/exit') {
-        console.log('Exiting chat...');
-        rl.close();
-        break;
-      }
-      // if input is empty, skip
+
+      // Skip empty input
       if (input.trim() === '') {
         continue;
       }
 
+      const commandHandled = ;
+      if (await handleCommand(input, rl, chat)) {
+        continue;
+      }
+
+      // Process regular input
       try {
         const response = await chat.call(input.trim());
         console.log(`\n${response}\n`);
@@ -46,6 +97,6 @@ export const terminal = async (options: OptionValues): Promise<void> => {
       }
     }
   };
-  
+
   startPrompt();
 };
