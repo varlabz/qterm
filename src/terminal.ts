@@ -83,7 +83,6 @@ export const terminal = async (options: OptionValues): Promise<void> => {
         continue;
       }
 
-      const commandHandled = ;
       if (await handleCommand(input, rl, chat)) {
         continue;
       }
