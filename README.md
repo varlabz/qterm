@@ -315,4 +315,6 @@ You can add your own custom prompts to the `user/` directory. Create Markdown fi
 
 ## License
 
-MIT
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+The MIT License is a permissive license that allows for reuse with few restrictions. It permits use, modification, distribution, private use, and commercial use while providing no warranty or liability.
