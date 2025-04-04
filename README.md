@@ -249,6 +249,70 @@ qtdm -i "Use the MCP tools to analyze this data"
 qtdl -i "Analyze the file in /workspace/myfile.txt"
 ```
 
+## Prompt Libraries Integration
+
+qterm integrates with two popular prompt libraries to provide a wide range of pre-built prompts for various use cases:
+
+### Fabric
+
+[Fabric](https://github.com/danielmiessler/fabric) is a collection of prompts designed to solve specific problems using AI. Created by Daniel Miessler, Fabric provides a structured approach to prompt engineering with prompts organized by use case.
+
+Fabric prompts are stored as Markdown files in the `fabric/` directory and can be accessed using the `-P` option.
+
+### Awesome ChatGPT Prompts
+
+[Awesome ChatGPT Prompts](https://github.com/f/awesome-chatgpt-prompts) is a curated list of prompt examples for ChatGPT and other language models. It contains a wide variety of prompts for different roles and tasks.
+
+Awesome ChatGPT Prompts are stored as text files in the `awesome/` directory after being processed from the original CSV format.
+
+### Using Prompt Libraries
+
+You can use prompts from these libraries in several ways:
+
+#### Listing Available Prompts
+
+To see all available prompts from both libraries:
+
+```bash
+# Using npm
+npm start -- -L
+
+# Using Docker
+docker run -i --rm -v $(pwd)/.key:/app/.key:ro varlabz/qterm -L
+```
+
+This will display a list of all prompts available in the `fabric/`, `awesome/`, and `user/` directories.
+
+#### Viewing a Specific Prompt
+
+To view the content of a specific prompt:
+
+```bash
+# Using npm
+npm start -- -P "prompt-name"
+
+# Using Docker
+docker run -i --rm -v $(pwd)/.key:/app/.key:ro varlabz/qterm -P "prompt-name"
+```
+
+Replace `prompt-name` with the name of the prompt you want to view. You can use the name with or without the file extension.
+
+#### Using a Prompt as a System Prompt
+
+To use a prompt from the libraries as a system prompt:
+
+```bash
+# Using npm
+npm start -- -s "fabric/prompt-name.md"
+
+# Using Docker
+docker run -it --rm -v $(pwd)/.key:/app/.key:ro varlabz/qterm -s "awesome/prompt-name.txt"
+```
+
+### Adding Custom Prompts
+
+You can add your own custom prompts to the `user/` directory. Create Markdown files with your prompts, and they will be automatically included when listing available prompts.
+
 ## License
 
 MIT

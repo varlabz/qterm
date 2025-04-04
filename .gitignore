@@ -3,4 +3,5 @@ tmp/
 dist/
 .key
 .env
-
+.awesome
+.fabric
