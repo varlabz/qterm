@@ -65,8 +65,15 @@ export const terminal = async (options: OptionValues): Promise<void> => {
 
       try {
         const fileContent = await fs.readFile(filePath, 'utf8');
-        const response = await chat.call(fileContent.trim());
-        console.log(`\n${response}\n`);
+        const intervalId = startSpinner();
+        try {
+          const response = await chat.call(fileContent.trim());
+          stopSpinner(intervalId);
+          console.log(`\r${response}\n`);
+        } catch (error) {
+          stopSpinner(intervalId);
+          console.error('Error reading file:', error instanceof Error ? error.message : String(error));
+        }
       } catch (error) {
         console.error('Error reading file:', error instanceof Error ? error.message : String(error));
       }
@@ -106,8 +113,15 @@ export const terminal = async (options: OptionValues): Promise<void> => {
 
       // Process regular input
       try {
-        const response = await chat.call(input.trim());
-        console.log(`\n${response}\n`);
+        const intervalId = startSpinner();
+        try {
+          const response = await chat.call(input.trim());
+          stopSpinner(intervalId);
+          console.log(`\r${response}\n`);
+        } catch (error: unknown) {
+          stopSpinner(intervalId);
+          console.error('Error:', error instanceof Error ? error.message : String(error));
+        }
       } catch (error: unknown) {
         console.error('Error:', error instanceof Error ? error.message : String(error));
       }
@@ -115,4 +129,17 @@ export const terminal = async (options: OptionValues): Promise<void> => {
   };
 
   startPrompt();
+};
+
+export const startSpinner = (): NodeJS.Timeout => {
+  let spinnerIndex = 0;
+  const spinnerFrames =  ['□', '▣', '■']; 
+  return setInterval(() => {
+    process.stdout.write(`\r${spinnerFrames[spinnerIndex]}`);
+    spinnerIndex = (spinnerIndex + 1) % spinnerFrames.length;
+  }, 200);
+};
+
+export const stopSpinner = (intervalId: NodeJS.Timeout): void => {
+  clearInterval(intervalId);
 };
