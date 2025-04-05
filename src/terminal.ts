@@ -14,7 +14,7 @@ import { timeTool, youTubeTranscriptTool, playwrightTool, duckDuckGoSearchTool, 
  * @param options - Command line options passed from index.ts
  */
 export const terminal = async (options: OptionValues): Promise<void> => {
-  console.log('Type "/exit" or press Ctrl+C to quit.');
+  console.log('Type "/help" to see available commands.');
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
@@ -40,6 +40,12 @@ export const terminal = async (options: OptionValues): Promise<void> => {
   ): Promise<boolean> => {
     // Convert to lowercase for case-insensitive command matching
     const lowerInput = input.toLowerCase();
+
+    // Handle /help command
+    if (lowerInput === '/help') {
+      displayAvailableCommands();
+      return true;
+    }
 
     // Handle /exit command
     if (lowerInput === '/exit') {
@@ -70,6 +76,17 @@ export const terminal = async (options: OptionValues): Promise<void> => {
 
     // If we reach here, the input wasn't a recognized command
     return false;
+  };
+
+  /**
+   * Displays all available commands and their descriptions
+   */
+  const displayAvailableCommands = (): void => {
+    console.log('\nAvailable Commands:');
+    console.log('/help                - Display this help message');
+    console.log('/exit                - Exit the chat session');
+    console.log('/read <file_path>    - Read a file and submit its contents to the chat');
+    console.log();
   };
 
   const startPrompt = async (): Promise<void> => {
