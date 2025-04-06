@@ -13,9 +13,12 @@ export const cli = async (options: OptionValues): Promise<void> => {
     await chat.start(await fileOrString(options.systemPrompt));
     const intervalId = startSpinner();
     try {
-      const response = await chat.call(await fileOrString(options.input));
-      stopSpinner(intervalId);
-      console.log(`\r${response}\n`);
+      const response = await chat.callStream(await fileOrString(options.input));
+      for await (const chunk of response) {
+        stopSpinner(intervalId);
+        process.stdout.write(chunk);
+      }
+      process.stdout.write('\n');
     } catch (error: unknown) {
       stopSpinner(intervalId);
       console.error('Error:', error instanceof Error ? error.message : String(error));

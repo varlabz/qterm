@@ -67,9 +67,12 @@ export const terminal = async (options: OptionValues): Promise<void> => {
         const fileContent = await fs.readFile(filePath, 'utf8');
         const intervalId = startSpinner();
         try {
-          const response = await chat.call(fileContent.trim());
-          stopSpinner(intervalId);
-          console.log(`\r${response}\n`);
+          const response = await chat.callStream(fileContent.trim());
+          for await (const chunk of response) {
+            stopSpinner(intervalId);
+            process.stdout.write(chunk);
+          }
+          process.stdout.write('\n');
         } catch (error) {
           stopSpinner(intervalId);
           console.error('Error reading file:', error instanceof Error ? error.message : String(error));
@@ -115,9 +118,12 @@ export const terminal = async (options: OptionValues): Promise<void> => {
       try {
         const intervalId = startSpinner();
         try {
-          const response = await chat.call(input.trim());
-          stopSpinner(intervalId);
-          console.log(`\r${response}\n`);
+          const response = await chat.callStream(input.trim());
+          for await (const chunk of response) {
+            stopSpinner(intervalId);
+            process.stdout.write(chunk);
+          }
+          process.stdout.write('\n');
         } catch (error: unknown) {
           stopSpinner(intervalId);
           console.error('Error:', error instanceof Error ? error.message : String(error));
@@ -141,5 +147,9 @@ export const startSpinner = (): NodeJS.Timeout => {
 };
 
 export const stopSpinner = (intervalId: NodeJS.Timeout): void => {
-  clearInterval(intervalId);
+  if (intervalId.hasRef()) {
+    process.stdout.write('\r'); // Clear the spinner 
+    clearInterval(intervalId);
+    intervalId.unref(); 
+  }
 };

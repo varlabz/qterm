@@ -1,6 +1,6 @@
 import { BaseChatModel } from '@langchain/core/language_models/chat_models';
 import { HumanMessagePromptTemplate, SystemMessagePromptTemplate } from '@langchain/core/prompts';
-import { BaseMessage, SystemMessage } from '@langchain/core/messages';
+import { AIMessageChunk, BaseMessage, SystemMessage } from '@langchain/core/messages';
 import { StructuredToolInterface } from '@langchain/core/tools';
 import use from '@varlabz/scope-extensions-js';
 
@@ -49,28 +49,37 @@ export class ChatAgent {
     // );
   }
 
-  async call(input: string): Promise<string | undefined> {
+  async *callStream(input: string): AsyncGenerator<string> {
     this._chatHistory.push(
       await HumanMessagePromptTemplate.fromTemplate('{input}').format({ input }),
     );
-    return (await (
-      await use(await this._llmTools.invoke(this._chatHistory))
+    const res = await 
+      use(await this._llmTools.invoke(this._chatHistory))
         ?.also(async (it) => this._chatHistory.push(await it))
-        ?.let(async (it) => use((await it).tool_calls)
-          ?.let(async (toolCalls) => {
-            const startToolCalls = this._chatHistory.length;
-            for (const toolCall of toolCalls) {
-              await use(this._tools.find((tool) => tool.name === toolCall.name)?.invoke(toolCall))
-                ?.also(async (it) => this._chatHistory.push(await it)).item;
-            };
-            return (
-              await use(await this._llmTools.invoke(this._chatHistory))
-                ?.takeIf(() => this._chatHistory.length > startToolCalls)   // call tools?
-                ?.also(async (it) => this._chatHistory.push(await it))
-            )?.item ?? it;
-          })?.item ?? it,
-        )
-    )?.item)?.text;
+        ?.item;
+    // Handle tool calls if present
+    if (res && res.tool_calls && res.tool_calls?.length > 0) {
+      const startToolCalls = this._chatHistory.length;
+      for (const toolCall of res.tool_calls) {
+        await use(this._tools.find((t) => t.name === toolCall.name)
+          ?.invoke(toolCall))
+            ?.also(async (it) => this._chatHistory.push(await it)).item;
+      }
+
+      if (this._chatHistory.length > startToolCalls) {
+        let chunks: AIMessageChunk | undefined;
+        for await (const chunk of await this._llmTools.stream(this._chatHistory)) {
+          if (chunk.text) {
+            chunks ??= chunk;
+            chunks = chunks.concat(chunk);
+            yield chunk.text;
+          }
+        }
+        if (chunks) this._chatHistory.push(chunks);
+      }
+    } else {
+      if (res) yield res.text;
+    }
   }
 
   async stop(): Promise<void> {
