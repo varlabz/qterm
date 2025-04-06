@@ -4,7 +4,7 @@ import * as path from 'path';
 import { ChatAgent } from './chat';
 import { OptionValues } from 'commander';
 import { fileOrString, llmConfig } from '.';
-import { timeTool, youTubeTranscriptTool, playwrightTool, duckDuckGoSearchTool, wikipediaTool } from './tools';
+import { timeTool, youTubeTranscriptTool, duckDuckGoSearchTool, wikipediaTool } from './tools';
 
 /**
  * Provides an interactive terminal interface for chatting with the LLM.
@@ -21,7 +21,7 @@ export const terminal = async (options: OptionValues): Promise<void> => {
   });
   const cfg = await llmConfig(options);
   // const tools = await initializeTools(options.mcpConfig);
-  const tools = [youTubeTranscriptTool, timeTool, playwrightTool, duckDuckGoSearchTool, wikipediaTool];
+  const tools = [youTubeTranscriptTool, timeTool, duckDuckGoSearchTool, wikipediaTool];
   const chat = new ChatAgent(cfg, tools);
   await chat.start(await fileOrString(options.systemPrompt));
 
