@@ -49,6 +49,35 @@ export const timeTool = tool(
   },
 );
 
+import { chromium, Browser } from 'playwright-core';
+export const fetchWebpageTool = tool(
+  async (url: string): Promise<string> => {
+    let browser: Browser | null = null;
+    try {
+      browser = await chromium.launch();
+      const page = await browser.newPage();
+      await page.goto(url);
+      const textContent = await page.innerText('body');
+      return textContent.trim();
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new Error(`Failed to fetch webpage: ${error.message}`);
+      } else {
+        throw new Error('Failed to fetch webpage due to an unknown error');
+      }
+    } finally {
+      if (browser) {
+        await browser.close();
+      }
+    }
+  },
+  {
+    name: 'fetch_webpage_tool',
+    description: 'Fetches the content of a webpage and returns it in a stripped HTML format.',
+    schema: z.string().describe('The full URL of the webpage (e.g., https://www.example.com).'),
+  },
+);
+
 import { DuckDuckGoSearch, SafeSearchType } from '@langchain/community/tools/duckduckgo_search';
 export const duckDuckGoSearchTool = new DuckDuckGoSearch({ maxResults: 5, searchOptions: { safeSearch: SafeSearchType.OFF } });
 duckDuckGoSearchTool.name = 'duckduckgo_search_tool';
