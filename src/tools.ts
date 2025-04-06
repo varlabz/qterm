@@ -23,8 +23,8 @@ export const youTubeTranscriptTool = tool(
   },
   {
     name: 'youtube_transcript_tool',
-    description: 'Extract transcript from a YouTube video.',
-    schema: z.string().describe('The YouTube video URL.'),
+    description: 'Retrieves the complete transcript from a YouTube video in English. Returns the raw text content without timestamps or speaker information. Requires a valid YouTube video URL that has closed captions available.',
+    schema: z.string().describe('The full YouTube video URL (e.g., https://www.youtube.com/watch?v=VIDEO_ID).'),
   },
 );
 
@@ -42,10 +42,10 @@ export const timeTool = tool(
   },
   {
     name: 'time_tool',
-    description: 'Get the current time with optional timezone.',
+    description: 'Fetches the current system time formatted according to specified locale and timezone. Returns time with hours, minutes, seconds, AM/PM indicator, and timezone abbreviation.',
     schema: z.object({
-      format: z.string().default('en-US').describe("Locale format (e.g., 'en-US', 'ja-JP')"),
-      timezone: z.string().optional().describe("Timezone (e.g., 'America/New_York', 'Asia/Tokyo')"),
+      format: z.string().default('en-US').describe("Locale format for time representation (e.g., 'en-US', 'ja-JP', 'de-DE'). Affects formatting conventions like separators and 12/24 hour display."),
+      timezone: z.string().optional().describe("IANA timezone identifier (e.g., 'America/New_York', 'Asia/Tokyo', 'Europe/London'). If omitted, uses system default timezone."),
     }),
   },
 );
@@ -93,19 +93,20 @@ export const playwrightTool = tool(
   },
   {
     name: 'playwright_tool',
-    description: 'Use Playwright to interact with web pages and retrieve their HTML content.',
+    description: 'Interacts with Chrome browser via CDP protocol to either list all open tabs or fetch HTML content from a specified URL. Requires Chrome to be running with remote debugging enabled on port 9222.',
     schema: z.object({
-      url: z.string().describe('The URL of the web page to fetch.'),
-      command: z.enum(['fetch', 'list']).describe('The command to execute: list (list of open tabs), or fetch (get web page content as html page).'),
+      url: z.string().describe('The URL of the web page to interact with. For "fetch" command, this is the page to retrieve. For "list" command, this is used to filter results.'),
+      command: z.enum(['fetch', 'list']).describe('The command to execute: "list" returns URLs of all open tabs, "fetch" retrieves the full HTML content of the specified URL.'),
     }),
   },
 );
 
-import { DuckDuckGoSearch } from '@langchain/community/tools/duckduckgo_search';
-export const duckDuckGoSearchTool = new DuckDuckGoSearch({ maxResults: 5 });
+import { DuckDuckGoSearch, SafeSearchType } from '@langchain/community/tools/duckduckgo_search';
+export const duckDuckGoSearchTool = new DuckDuckGoSearch({ maxResults: 5, searchOptions: { safeSearch: SafeSearchType.OFF } });
+duckDuckGoSearchTool.name = 'duckduckgo_search_tool';
+duckDuckGoSearchTool.description = 'Searches the web using DuckDuckGo search engine with SafeSearch disabled. Returns up to 5 most relevant results including titles, snippets, and source URLs. Useful for finding current information not available in the model\'s training data.';
 
 import { WikipediaQueryRun } from '@langchain/community/tools/wikipedia_query_run';
-export const wikipediaTool = new WikipediaQueryRun({
-  topKResults: 3,
-  maxDocContentLength: 4000,
-});
+export const wikipediaTool = new WikipediaQueryRun({ topKResults: 3,  maxDocContentLength: 4000, });
+wikipediaTool.name = 'wikipedia_tool';
+wikipediaTool.description = 'Queries Wikipedia for information on a given topic, returning up to 3 most relevant article excerpts. Each result is limited to 4000 characters maximum. Provides factual, encyclopedic information from Wikipedia\'s knowledge base.';
